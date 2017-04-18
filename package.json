@@ -8,6 +8,25 @@
     "demo",
     "webpack"
   ],
+  "scripts":{
+    "d1":"cd demo01 && webpack",
+    "d2":"cd demo02 && webpack",
+    "d3":"cd demo03 && webpack",
+    "d4":"cd demo04 && webpack",
+    "d5":"cd demo05 && webpack",
+    "d6":"cd demo06 && webpack",
+    "d7":"cd demo07 && webpack",
+    "d8":"cd demo08 && webpack-dev-server",
+    "d9":"cd demo09 && webpack-dev-server",
+    "d10":"cd demo10 && webpack-dev-server",
+    "d11":"cd demo11 && webpack-dev-server",
+    "d12":"cd demo12 && webpack",
+    "d13":"cd demo13 && webpack-dev-server",
+    "d131":"cd demo13 && webpack --config provide.config.js",
+    "d132":"cd demo13 && webpack --config manifest.config.js",
+    "d14":"cd demo14 && webpack",
+    "d15":"cd demo15 && webpack-dev-server"
+  },
   "author": "Ruan Yifeng",
   "license": "MIT",
   "dependencies": {
@@ -28,8 +47,8 @@
     "react-router": "2.x",
     "style-loader": "0.x",
     "url-loader": "~0.5.6",
-    "webpack": "1.x",
-    "webpack-dev-server": "1.x"
+    "webpack": "^1.15.0",
+    "webpack-dev-server": "^1.16.3"
   },
   "repository": "ruanyf/webpack-demos"
 }

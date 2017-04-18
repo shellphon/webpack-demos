@@ -4,7 +4,7 @@ var OpenBrowserPlugin = require('open-browser-webpack-plugin');
 module.exports = {
   entry: './main.js',
   output: {
-    filename: 'bundle.js'
+    filename: 'dist/bundle.js'
   },
   plugins: [
     new HtmlwebpackPlugin({

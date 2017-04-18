@@ -1,113 +1,55 @@
-This repo is a collection of simple demos of Webpack.
+## Fork from [ruanyf](https://github.com/ruanyf/webpack-demos)
 
-These demos are purposely written in a simple and clear style. You will find no difficulty in following them to learn the powerful tool.
+转自阮老师的repo，加上了你自己的见解和demo修改。
 
-## How to use
+添加了`scripts`字段，规避要全局安装`webpack`和`webpack-dev-server`的条件，整理成`npm`指令模式运行。
 
-First, install [Webpack](https://www.npmjs.com/package/webpack) and [webpack-dev-server](https://www.npmjs.com/package/webpack-dev-server) globally.
+## 使用预备
 
-```bash
-$ npm i -g webpack@1.x webpack-dev-server@1.x
-```
-
-Then, clone the repo and install the dependencies.
+clone下这个repo，并安装依赖包。
 
 ```bash
-# Linux & Mac
-$ git clone git@github.com:ruanyf/webpack-demos.git
-
-# Windows
-$ git clone https://github.com/ruanyf/webpack-demos.git
-:
+$ git clone https://github.com/shellphon/webpack-demos
 $ cd webpack-demos
-$ npm install
+$ npm i
 ```
 
-Now, play with the source files under the repo's demo* directories.
+## 关于[script指令](http://www.ruanyifeng.com/blog/2016/10/npm_scripts.html)
+
+> 比较特别的是，npm run新建的这个 Shell，会将当前目录的node_modules/.bin子目录加入PATH变量，执行结束后，再将PATH变量恢复原样。
+
+于是我们可以通过将“进入目录”和“运行webpack”两个命令写进`scripts`字段来执行。
+
+比如`demo01`的运行指令主要是
 
 ```bash
 $ cd demo01
-$ webpack-dev-server
-```
-
-Visit http://127.0.0.1:8080 with your browser.
-
-## Foreword: What is Webpack
-
-Webpack is a front-end build systems like Grunt and Gulp.
-
-It can be used as a module bundler similar to Browserify, and do [much more](http://webpack.github.io/docs/what-is-webpack.html).
-
-```bash
-$ browserify main.js > bundle.js
-# be equivalent to
-$ webpack main.js bundle.js
-```
-
-Its configuration file is `webpack.config.js`.
-
-```javascript
-// webpack.config.js
-module.exports = {
-  entry: './main.js',
-  output: {
-    filename: 'bundle.js'
-  }
-};
-```
-
-After having `webpack.config.js`, you can invoke Webpack without any arguments.
-
-```bash
 $ webpack
 ```
 
-Some command-line options you should know.
-
-- `webpack` – for building once for development
-- `webpack -p` – for building once for production (minification)
-- `webpack --watch` – for continuous incremental build
-- `webpack -d` – to include source maps
-- `webpack --colors` – for making things pretty
-
-To produce a production ready application, you could write `scripts` field in your package.json file as following.
+我们可以写成:
 
 ```javascript
-// package.json
-{
-  // ...
-  "scripts": {
-    "dev": "webpack-dev-server --devtool eval --progress --colors",
-    "deploy": "NODE_ENV=production webpack -p"
-  },
-  // ...
+"scripts":{
+  "demo1":"cd demo01 && webpack"
 }
 ```
 
-## Index
+然后在repo根目录运行：
 
-1. [Entry file](#demo01-entry-file-source)
-1. [Multiple entry files](#demo02-multiple-entry-files-source)
-1. [Babel-loader](#demo03-babel-loader-source)
-1. [CSS-loader](#demo04-css-loader-source)
-1. [Image loader](#demo05-image-loader-source)
-1. [CSS Module](#demo06-css-module-source)
-1. [UglifyJs Plugin](#demo07-uglifyjs-plugin-source)
-1. [HTML Webpack Plugin and Open Browser Webpack Plugin](#demo08-html-webpack-plugin-and-open-browser-webpack-plugin-source)
-1. [Environment flags](#demo09-environment-flags-source)
-1. [Code splitting](#demo10-code-splitting-source)
-1. [Code splitting with bundle-loader](#demo11-code-splitting-with-bundle-loader-source)
-1. [Common chunk](#demo12-common-chunk-source)
-1. [Vendor chunk](#demo13-vendor-chunk-source)
-1. [Exposing Global Variables](#demo14-exposing-global-variables-source)
-1. [Hot Module Replacement](#demo15-hot-module-replacement-source)
-1. [React router](#demo16-react-router-source)
+```bash
+$ npm run demo1
+```
 
-## Demo01: Entry file ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo01))
+## Demo01: 入口文件 ([source](https://github.com/shellphon/webpack-demos/tree/master/demo01))
 
-Entry file is a file which Webpack will read to build bundle.js.
+```bash
+$ npm run d1
+```
 
-For example, `main.js` is an entry file.
+webpack通过将入口文件编译构建成bundle
+
+例如, `main.js` 是一个入口文件
 
 ```javascript
 // main.js
@@ -119,32 +61,37 @@ index.html
 ```html
 <html>
   <body>
-    <script type="text/javascript" src="bundle.js"></script>
+    <script type="text/javascript" src="dist/bundle.js"></script>
   </body>
 </html>
 ```
 
-Webpack follows `webpack.config.js` to build `bundle.js`.
+Webpack 通过 `webpack.config.js` 配置来构建`bundle.js`.
 
 ```javascript
 // webpack.config.js
 module.exports = {
   entry: './main.js',
   output: {
+    path:'dist',//文件输出目录
     filename: 'bundle.js'
   }
 };
 ```
 
-Launch the server, visit http://127.0.0.1:8080 .
+直接浏览器打开`index.html`就可以看到效果，或者查看是否输出对应文件。也可以架设本地服务启动。
 
 ```bash
 $ webpack-dev-server
 ```
 
-## Demo02: Multiple entry files ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo02))
+## Demo02:  多入口文件 ([source](https://github.com/shellphon/webpack-demos/tree/master/demo02))
 
-Multiple entry files are allowed. It is useful for a multi-page app.
+```bash
+$ npm run d2
+```
+
+多入口文件也是支持的，适用于多页面网站前端开发。
 
 ```javascript
 // main1.js
@@ -159,8 +106,8 @@ index.html
 ```html
 <html>
   <body>
-    <script src="bundle1.js"></script>
-    <script src="bundle2.js"></script>
+    <script src="dist/bundle1.js"></script>
+    <script src="dist/bundle2.js"></script>
   </body>
 </html>
 ```
@@ -174,16 +121,21 @@ module.exports = {
     bundle2: './main2.js'
   },
   output: {
+    path:'dist',
     filename: '[name].js'
   }
 };
 ```
 
-## Demo03: Babel-loader ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo03))
+## Demo03: Babel-loader ([source](https://github.com/shellphon/webpack-demos/tree/master/demo03))
 
-Loaders are preprocessors which transform a resource file of your app ([more info](http://webpack.github.io/docs/using-loaders.html)). For example, [Babel-loader](https://www.npmjs.com/package/babel-loader) can transform JSX/ES6 file into JS file. Official doc has a complete list of [loaders](http://webpack.github.io/docs/list-of-loaders.html).
+```bash
+$ npm run d3
+```
 
-`main.jsx` is a JSX file.
+Loader是一个转换资源文件的预处理器 ([更多信息](http://webpack.github.io/docs/using-loaders.html)). 比如, [Babel-loader](https://www.npmjs.com/package/babel-loader) 可以将 JSX/ES6 文件转译成 JS 文件. 官方提供了一系列可用的 [loaders](http://webpack.github.io/docs/list-of-loaders.html).
+
+`main.jsx` 是一个jsx文件.
 
 ```javascript
 const React = require('react');
@@ -201,7 +153,7 @@ index.html
 <html>
   <body>
     <div id="wrapper"></div>
-    <script src="bundle.js"></script>
+    <script src="dist/bundle.js"></script>
   </body>
 </html>
 ```
@@ -212,6 +164,7 @@ webpack.config.js
 module.exports = {
   entry: './main.jsx',
   output: {
+    path:'dist',
     filename: 'bundle.js'
   },
   module: {
@@ -226,7 +179,7 @@ module.exports = {
 };
 ```
 
-In `webpack.config.js`, `module.loaders` field is used to assign loaders. The above snippet uses `babel-loader` which also needs plugins [babel-preset-es2015](https://www.npmjs.com/package/babel-preset-es2015) and [babel-preset-react](https://www.npmjs.com/package/babel-preset-react) to transpile ES6 and React. You can also take another way to set the babel query option.
+在配置文件 `webpack.config.js`里, `module.loaders` 字段用于配置所需的 loaders. 如上配置的 `babel-loader` 需要配合安装插件 [babel-preset-es2015](https://www.npmjs.com/package/babel-preset-es2015) 和 [babel-preset-react](https://www.npmjs.com/package/babel-preset-react) 来编译 ES6 和 React. 当然也可以利用`query`子字段来配置相关内容。
 
 ```javascript
 module: {
@@ -243,9 +196,13 @@ module: {
 }
 ```
 
-## Demo04: CSS-loader ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo04))
+## Demo04: CSS-loader ([source](https://github.com/shellphon/webpack-demos/tree/master/demo04))
 
-Webpack allows you to require CSS in JS file, then preprocessed CSS file with CSS-loader.
+```bash
+$ npm run d4
+```
+
+Webpack 允许通过在js里引入CSS文件, 编译时将通过 CSS-loader来预处理 CSS.
 
 main.js
 
@@ -266,7 +223,7 @@ index.html
 ```html
 <html>
   <head>
-    <script type="text/javascript" src="bundle.js"></script>
+    <script type="text/javascript" src="dist/bundle.js"></script>
   </head>
   <body>
     <h1>Hello World</h1>
@@ -280,6 +237,7 @@ webpack.config.js
 module.exports = {
   entry: './main.js',
   output: {
+    path:'dist',
     filename: 'bundle.js'
   },
   module: {
@@ -290,13 +248,13 @@ module.exports = {
 };
 ```
 
-Attention, you have to use two loaders to transform CSS file. First is [CSS-loader](https://www.npmjs.com/package/css-loader) to read CSS file, and another is [Style-loader](https://www.npmjs.com/package/style-loader) to insert Style tag into HTML page. Different loaders are linked by exclamation mark(!).
+注意, 你需要用到两个loader来编译CSS文件. 首先是 [CSS-loader](https://www.npmjs.com/package/css-loader) 读取css文件 然后用 [Style-loader](https://www.npmjs.com/package/style-loader) 将样式内容以 Style 标签形式内嵌到 HTML 页面中. 多个loader用`!`来连接.
 
-After launching the server, `index.html` will have internal style sheet.
+构建完成后，打开index.html会呈现出如下源码：
 
 ```html
 <head>
-  <script type="text/javascript" src="bundle.js"></script>
+  <script type="text/javascript" src="dist/bundle.js"></script>
   <style type="text/css">
     body {
       background-color: blue;
@@ -305,9 +263,13 @@ After launching the server, `index.html` will have internal style sheet.
 </head>
 ```
 
-## Demo05: Image loader ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo05))
+## Demo05: Image loader ([source](https://github.com/shellphon/webpack-demos/tree/master/demo05))
 
-Webpack could also require images in JS files.
+```bash
+$ npm run d5
+```
+
+Webpack 同样可以在js里引入图片资源.
 
 main.js
 
@@ -326,7 +288,7 @@ index.html
 ```html
 <html>
   <body>
-    <script type="text/javascript" src="bundle.js"></script>
+    <script type="text/javascript" src="dist/bundle.js"></script>
   </body>
 </html>
 ```
@@ -337,7 +299,7 @@ webpack.config.js
 module.exports = {
   entry: './main.js',
   output: {
-    filename: 'bundle.js'
+    filename: 'dist/bundle.js'
   },
   module: {
     loaders:[
@@ -347,20 +309,24 @@ module.exports = {
 };
 ```
 
-[url-loader](https://www.npmjs.com/package/url-loader) transforms image files. If the image size is smaller than 8192 bytes, it will be transformed into Data URL; otherwise, it will be transformed into normal URL. As you see, question mark(?) is used to pass parameters into loaders.
+[url-loader](https://www.npmjs.com/package/url-loader) 用于转换图片资源文件. 如上配置，如果图片大小小于 8192 bytes, 该图片将会转换为 Data URL; 否则, 它将转换为普通的 URL. 如上，`?`用于传递参数的分隔符。
 
-After launching the server, `small.png` and `big.png` will have the following URLs.
+上例运行之后，两个图片将会呈现出如下链接：
 
 ```html
 <img src="data:image/png;base64,iVBOR...uQmCC">
 <img src="4853ca667a2b8b8844eb2693ac1b2578.png">
 ```
 
-## Demo06: CSS Module ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo06))
+## Demo06: CSS 模块 ([source](https://github.com/shellphon/webpack-demos/tree/master/demo06))
 
-`css-loader?modules` (the query parameter modules) enables the [CSS Modules](https://github.com/css-modules/css-modules) spec.
+```bash
+$ npm run d6
+```
 
-It means your module's CSS is local scoped CSS by default. You can switch it off with `:global(...)` for selectors and/or rules. ([more info](https://css-modules.github.io/webpack-demo/))
+`css-loader?modules` (配置参数modules) 启动了 [CSS Modules](https://github.com/css-modules/css-modules).
+
+这就意味着你的模块css默认拥有局部作用域. 可以通过 选择器带上`:global(...)` 来关闭局部作用域. ([更多信息](https://css-modules.github.io/webpack-demo/))
 
 index.html
 
@@ -370,7 +336,7 @@ index.html
   <h1 class="h1">Hello World</h1>
   <h2 class="h2">Hello Webpack</h2>
   <div id="example"></div>
-  <script src="./bundle.js"></script>
+  <script src="./dist/bundle.js"></script>
 </body>
 </html>
 ```
@@ -409,7 +375,7 @@ webpack.config.js
 module.exports = {
   entry: './main.jsx',
   output: {
-    filename: 'bundle.js'
+    filename: 'dist/bundle.js'
   },
   module: {
     loaders:[
@@ -429,18 +395,15 @@ module.exports = {
   }
 };
 ```
+打开页面，你会发现，只有第二个h1才是红色字体 ，因为其css是局部作用域的，不会影响到其他h1,(其实际产出的选择器名做了处理) ，而所有h2都是蓝色的，是因为其关闭了作用域选项。
 
-Launch the server.
+## Demo07: UglifyJs 插件 ([source](https://github.com/shellphon/webpack-demos/tree/master/demo07))
 
 ```bash
-$ webpack-dev-server
+$ npm run d7
 ```
 
-Visit http://127.0.0.1:8080 , you'll find that only second `h1` is red, because its CSS is local scoped, and both `h2` is blue, because its CSS is global scoped.
-
-## Demo07: UglifyJs Plugin ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo07))
-
-Webpack has a plugin system to expand its functions. For example, [UglifyJs Plugin](http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin) will minify output(`bundle.js`) JS codes.
+Webpack 具备插件系统来扩展其功能.  [UglifyJs Plugin](http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin) 压缩输出(`bundle.js`) JS 文件.
 
 main.js
 
@@ -455,7 +418,7 @@ index.html
 ```html
 <html>
 <body>
-  <script src="bundle.js"></script>
+  <script src="dist/bundle.js"></script>
 </body>
 </html>
 ```
@@ -468,7 +431,7 @@ var uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 module.exports = {
   entry: './main.js',
   output: {
-    filename: 'bundle.js'
+    filename: 'dist/bundle.js'
   },
   plugins: [
     new uglifyJsPlugin({
@@ -480,17 +443,21 @@ module.exports = {
 };
 ```
 
-After launching the server, `main.js` will be minified into following.
+构建之后，将得到这样一个bundle.js
 
 ```javascript
 var o="Hello";o+=" World",document.write("<h1>"+o+"</h1>")
 ```
 
-## Demo08: HTML Webpack Plugin and Open Browser Webpack Plugin ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo08))
+## Demo08: HTML Webpack 插件 和 启动浏览器Webpack Plugin ([source](https://github.com/shellphon/webpack-demos/tree/master/demo08))
 
-This demo shows you how to load 3rd-party plugins.
+```bash
+$ npm run d8
+```
 
-[html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin) could create `index.html` for you, and [open-browser-webpack-plugin](https://github.com/baldore/open-browser-webpack-plugin) could open a new browser tab when Webpack loads.
+这个demo展示如何使用第三方插件。
+
+[html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin) 能自动创建html, 而 [open-browser-webpack-plugin](https://github.com/baldore/open-browser-webpack-plugin) 能在webpack加载时自动启动浏览器打开页面.
 
 main.js
 
@@ -507,7 +474,7 @@ var OpenBrowserPlugin = require('open-browser-webpack-plugin');
 module.exports = {
   entry: './main.js',
   output: {
-    filename: 'bundle.js'
+    filename: 'dist/bundle.js'
   },
   plugins: [
     new HtmlwebpackPlugin({
@@ -521,17 +488,17 @@ module.exports = {
 };
 ```
 
-Run `webpack-dev-server`.
+启动`webpack-dev-server`.
+
+这样，你无需手动创建index.html和用浏览器打开页面，webpack自动帮你做了这些操作。
+
+## Demo09: 设置环境变量 ([source](https://github.com/shellphon/webpack-demos/tree/master/demo09))
 
 ```bash
-$ webpack-dev-server
+$ npm run d9
 ```
 
-Now you don't need to write `index.html` by hand and don't have to open browser by yourself. Webpack did all these things for you.
-
-## Demo09: Environment flags ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo09))
-
-You can enable some codes only in development environment with environment flags.
+利用DefinePlugin可以让js使用全局变量，比如读取环境变量等。
 
 main.js
 
@@ -559,19 +526,20 @@ webpack.config.js
 var webpack = require('webpack');
 
 var devFlagPlugin = new webpack.DefinePlugin({
+  //通过node的api读取环境变量
   __DEV__: JSON.stringify(JSON.parse(process.env.DEBUG || 'false'))
 });
 
 module.exports = {
   entry: './main.js',
   output: {
-    filename: 'bundle.js'
+    filename: 'dist/bundle.js'
   },
   plugins: [devFlagPlugin]
 };
 ```
 
-Now pass environment variable into webpack.
+设置环境变量并运行
 
 ```bash
 # Linux & Mac
@@ -582,11 +550,15 @@ $ set DEBUG=true
 $ webpack-dev-server
 ```
 
-## Demo10: Code splitting ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo10))
+## Demo10: 代码分割 ([source](https://github.com/shellphon/webpack-demos/tree/master/demo10))
 
-For big web apps it’s not efficient to put all code into a single file, Webpack allows you to split them into several chunks. Especially if some blocks of code are only required under some circumstances, these chunks could be loaded on demand.
+```bash
+$ npm run d10
+```
 
-At first, you use `require.ensure` to define a split point. ([official document](http://webpack.github.io/docs/code-splitting.html))
+在大型web应用了，将所有js都放在一个单独的js文件里并不高效, Webpack 允许你将其分割成几个chunks. 特别是一些模块只需要在特定情形下才需要用到，它可以实现按需异步加载.
+
+首先, 使用 `require.ensure` 来定义一个代码分割点. ([官方文档](http://webpack.github.io/docs/code-splitting.html))
 
 ```javascript
 // main.js
@@ -598,19 +570,19 @@ require.ensure(['./a'], function(require) {
 });
 ```
 
-`require.ensure` tells Webpack that `./a.js` should be separated from `bundle.js` and built into a single chunk file.
+`require.ensure` 告知webpack `./a.js` 需要从`bundle.js`分离，并构建得到一个独立的chunk.
 
 ```javascript
 // a.js
 module.exports = 'Hello World';
 ```
 
-Now Webpack takes care of the dependencies, output files and runtime stuff. You don't have to put any redundancy into your `index.html` and `webpack.config.js`.
+webpack会自动处理这些异步以及输出对应文件，而无需手动去html或者配置文件里添加内容。
 
 ```html
 <html>
   <body>
-    <script src="bundle.js"></script>
+    <script src="dist/bundle.js"></script>
   </body>
 </html>
 ```
@@ -621,22 +593,21 @@ webpack.config.js
 module.exports = {
   entry: './main.js',
   output: {
+    path:'dist',
     filename: 'bundle.js'
   }
 };
 ```
 
-Launch the server.
+实际上Webpack 已经将 `main.js` 和 `a.js` 构建成不同的chunk (`bundle.js` and `1.bundle.js`), 然后 `1.bundle.js` 是在 `bundle.js` 内异步加载进去的.
+
+## Demo11:  通过bundle-loader来做代码分割 ([source](https://github.com/shellphon/webpack-demos/tree/master/demo11))
 
 ```bash
-$ webpack-dev-server
+$ npm run d11
 ```
 
-On the surface, you won't feel any differences. However, Webpack actually builds `main.js` and `a.js` into different chunks(`bundle.js` and `1.bundle.js`), and loads `1.bundle.js` from `bundle.js` when on demand.
-
-## Demo11: Code splitting with bundle-loader ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo11))
-
-Another way of code splitting is using [bundle-loader](https://www.npmjs.com/package/bundle-loader).
+另外一种代码分割的方式，利用 [bundle-loader](https://www.npmjs.com/package/bundle-loader).
 
 ```javascript
 // main.js
@@ -653,13 +624,19 @@ load(function(file) {
 });
 ```
 
-`require('bundle-loader!./a.js')` tells Webpack to load `a.js` from another chunk.
+`require('bundle-loader!./a.js')` 告知webpack要异步加载 `a.js`.
 
-Now Webpack will build `main.js` into `bundle.js`, and `a.js` into `1.bundle.js`.
+而webpack将 `main.js` 转化为 `bundle.js`, 将 `a.js` 转化为 `1.bundle.js`.
 
-## Demo12: Common chunk ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo12))
+实际上看过bundle的代码会发现，其实最终还是用了`require.ensure`，不过源码编写方式不同了。
 
-When multi scripts have common chunks, you can extract the common part into a separate file with CommonsChunkPlugin.
+## Demo12: Common chunk ([source](https://github.com/shellphon/webpack-demos/tree/master/demo12))
+
+```bash
+$ npm run d12
+```
+
+当多个脚本共用一部分代码时，我们可以通过插件 CommonsChunkPlugin 来将公共部分独立开来（主要是独立出模块化实现部分）.
 
 ```javascript
 // main1.jsx
@@ -688,9 +665,9 @@ index.html
   <body>
     <div id="a"></div>
     <div id="b"></div>
-    <script src="init.js"></script>
-    <script src="bundle1.js"></script>
-    <script src="bundle2.js"></script>
+    <script src="dist/init.js"></script>
+    <script src="dist/bundle1.js"></script>
+    <script src="dist/bundle2.js"></script>
   </body>
 </html>
 ```
@@ -705,6 +682,7 @@ module.exports = {
     bundle2: './main2.jsx'
   },
   output: {
+    path:'dist',
     filename: '[name].js'
   },
   module: {
@@ -725,7 +703,11 @@ module.exports = {
 }
 ```
 
-## Demo13: Vendor chunk ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo13))
+## Demo13: Vendor chunk ([source](https://github.com/shellphon/webpack-demos/tree/master/demo13))
+
+```bash
+$ npm run d13
+```
 
 You can also extract the vendor libraries from a script into a separate file with CommonsChunkPlugin.
 
@@ -794,7 +776,11 @@ module.exports = {
 };
 ```
 
-## Demo14: Exposing global variables ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo14))
+## Demo14: Exposing global variables ([source](https://github.com/shellphon/webpack-demos/tree/master/demo14))
+
+```bash
+$ npm run d1
+```
 
 If you want to use some global variables, and don't want to include them in the Webpack bundle, you can enable `externals` field in `webpack.config.js` ([official document](http://webpack.github.io/docs/library-and-externals.html)).
 
@@ -847,7 +833,11 @@ ReactDOM.render(
 );
 ```
 
-## Demo15: Hot Module Replacement ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo15))
+## Demo15: Hot Module Replacement ([source](https://github.com/shellphon/webpack-demos/tree/master/demo15))
+
+```bash
+$ npm run d1
+```
 
 [Hot Module Replacement](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack) (HMR) exchanges, adds, or removes modules while an application is running **without a page reload**.
 
@@ -948,7 +938,11 @@ index.html
 </html>
 ```
 
-## Demo16: React router ([source](https://github.com/ruanyf/webpack-demos/tree/master/demo16))
+## Demo16: React router ([source](https://github.com/shellphon/webpack-demos/tree/master/demo16))
+
+```bash
+$ npm run d1
+```
 
 This demo uses webpack to build [React-router](https://github.com/rackt/react-router/blob/0.13.x/docs/guides/overview.md)'s official example.
 

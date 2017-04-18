@@ -5,6 +5,7 @@ module.exports = {
     bundle2: './main2.jsx'
   },
   output: {
+    path:'dist',
     filename: '[name].js'
   },
   module: {

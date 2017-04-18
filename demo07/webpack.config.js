@@ -3,7 +3,7 @@ var uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 module.exports = {
   entry: './main.js',
   output: {
-    filename: 'bundle.js'
+    filename: 'dist/bundle.js'
   },
   plugins: [
     new uglifyJsPlugin({

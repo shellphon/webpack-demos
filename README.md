@@ -709,7 +709,7 @@ module.exports = {
 $ npm run d13
 ```
 
-You can also extract the vendor libraries from a script into a separate file with CommonsChunkPlugin.
+利用 CommonsChunkPlugin 插件，将库框架等公共文件抽离出来.
 
 main.js
 
@@ -749,7 +749,7 @@ module.exports = {
 };
 ```
 
-If you want a module available as variable in every module, such as making $ and jQuery available in every module without writing `require("jquery")`. You should use `ProvidePlugin` ([Official doc](http://webpack.github.io/docs/shimming-modules.html)).
+如果你想在每个模块里都能使用某个模块, 比如在每个模块内，不需要写`require("jquery")`而让 $ 和 jQuery 能够直接使用。 可以用 `ProvidePlugin`插件实现 ([官方文档](http://webpack.github.io/docs/shimming-modules.html)).
 
 ```javascript
 // main.js
@@ -776,21 +776,71 @@ module.exports = {
 };
 ```
 
+## Demo13_1: manifest ([source](https://github.com/shellphon/webpack-demos/tree/master/demo13_1))
+
+从前面几个demo来看，我们不想把所有js都合并在一起，那就用`CommonsChunkPlugins`分离出公共部分，通常会把库\框架如`jquery`\`react`也抽离出来，但是如果仔细查看会发现，webpack的模块化代码抽离出来了，里面由包含一些时常要更新的内容，很多时候，框架或者库等公共部分，只要一次编译，几乎就没有更新的需求，而且由于其内容比较多，花的编译时间也长，我们可以考虑把其中需要经常更新的部分抽离出来，把框架等无需长期更新的部分独立开来，分割出`manifest`和`vender`,解决此类问题。
+
+```bash
+$ npm run d13_1
+```
+
+index.html
+
+```html
+<html>
+  <body>
+    <h1></h1>
+    <script src="dist/manifest.js"></script>
+    <script src="dist/vendor.js"></script>
+    <script src="dist/app.js"></script>
+  </body>
+</html>
+```
+
+main.js
+
+```javascript
+var $ = require('jquery');
+$('h1').text('Hello World');
+```
+
+webpack.config.js
+
+```javascript
+var webpack = require('webpack');
+
+module.exports = {
+  entry: {
+    app: './main.js',
+    vendor: ['jquery'],
+  },
+  output: {
+    path:'dist',
+    filename: '[name].js'
+  },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      names:['vendor','manifest']
+    })
+  ]
+};
+```
+
 ## Demo14: Exposing global variables ([source](https://github.com/shellphon/webpack-demos/tree/master/demo14))
 
 ```bash
-$ npm run d1
+$ npm run d14
 ```
 
-If you want to use some global variables, and don't want to include them in the Webpack bundle, you can enable `externals` field in `webpack.config.js` ([official document](http://webpack.github.io/docs/library-and-externals.html)).
+如果你想使用全局变量，又不想把这些变量放置到bundle里, 可以配置 `externals` 选项([官方文档](http://webpack.github.io/docs/library-and-externals.html)).
 
-For example, we have a `data.js`.
+比如`data.js`.
 
 ```javascript
 var data = 'Hello World';
 ```
 
-We can expose `data` as a global variable.
+我们可以设置`data`作为全局变量 
 
 ```javascript
 // webpack.config.js
@@ -819,7 +869,7 @@ module.exports = {
 };
 ```
 
-Now, you require `data` as a module variable in your script. but it actually is a global variable.
+这样就可以 require `data` 作为一个模块变量使用，但实际上它已经是全局变量了.
 
 ```javascript
 // main.jsx
@@ -833,34 +883,34 @@ ReactDOM.render(
 );
 ```
 
-## Demo15: Hot Module Replacement ([source](https://github.com/shellphon/webpack-demos/tree/master/demo15))
+## Demo15: Hot Module Replacement (热替换) ([source](https://github.com/shellphon/webpack-demos/tree/master/demo15))
 
 ```bash
-$ npm run d1
+$ npm run d15
 ```
 
-[Hot Module Replacement](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack) (HMR) exchanges, adds, or removes modules while an application is running **without a page reload**.
+[Hot Module Replacement](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack) (HMR) 实现应用启动后无需重新加载页面即可更新模块.
 
-You have [two ways](http://webpack.github.io/docs/webpack-dev-server.html#hot-module-replacement) to enable Hot Module Replacement with the webpack-dev-server.
+有两种 [方法](http://webpack.github.io/docs/webpack-dev-server.html#hot-module-replacement) 通过webpack-dev-server启动热替换
 
-(1) Specify `--hot` and `--inline` on the command line
+(1) 命令行参数 `--hot` 和 `--inline` 
 
 ```bash
 $ webpack-dev-server --hot --inline
 ```
 
-Meaning of the options:
+参数描述:
 
-- `--hot`: adds the HotModuleReplacementPlugin and switch the server to hot mode.
-- `--inline`: embed the webpack-dev-server runtime into the bundle.
-- `--hot --inline`: also adds the webpack/hot/dev-server entry.
+- `--hot`: 加入插件 HotModuleReplacementPlugin 并且开启服务热启动模式.
+- `--inline`: 将webpack-dev-server运行时加入bundle.
+- `--hot --inline`: 同时添加了 webpack/hot/dev-server 入口.
 
-(2) Modify `webpack.config.js`.
+(2) 配置 `webpack.config.js`.
 
-- add `new webpack.HotModuleReplacementPlugin()` to the `plugins` field
-- add `webpack/hot/dev-server` and `webpack-dev-server/client?http://localhost:8080` to the `entry` field
+- 添加plugins插件配置 `new webpack.HotModuleReplacementPlugin()`
+- 入口文件添加 `webpack/hot/dev-server` 和 `webpack-dev-server/client?http://localhost:8080`
 
-`webpack.config.js` looks like the following.
+`webpack.config.js` 如下
 
 ```javascript
 var webpack = require('webpack');
@@ -893,15 +943,7 @@ module.exports = {
 };
 ```
 
-Now launch the dev server.
-
-```bash
-$ webpack-dev-server
-```
-
-Visiting http://localhost:8080, you should see 'Hello World' in your browser.
-
-Don't close the server. Open a new terminal to edit `App.js`, and modify 'Hello World' into 'Hello Webpack'. Save it, and see what happened in the browser.
+页面将实时反馈，呈现源码修改的内容更新。
 
 App.js
 
@@ -941,12 +983,12 @@ index.html
 ## Demo16: React router ([source](https://github.com/shellphon/webpack-demos/tree/master/demo16))
 
 ```bash
-$ npm run d1
+$ npm run d16
 ```
 
-This demo uses webpack to build [React-router](https://github.com/rackt/react-router/blob/0.13.x/docs/guides/overview.md)'s official example.
+利用webpack去构建 [React-router](https://github.com/rackt/react-router/blob/0.13.x/docs/guides/overview.md)的官方例子.
 
-Let's imagine a little app with a dashboard, inbox, and calendar.
+想象一下做一个app具备dashboard, inbox, 和 calendar.
 
 ```
 +---------------------------------------------------------+
@@ -974,7 +1016,7 @@ Let's imagine a little app with a dashboard, inbox, and calendar.
 $ webpack-dev-server --history-api-fallback
 ```
 
-## Useful links
+## 参考链接
 
 - [Webpack docs](http://webpack.github.io/docs/)
 - [webpack-howto](https://github.com/petehunt/webpack-howto), by Pete Hunt

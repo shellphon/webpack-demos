@@ -22,10 +22,10 @@
     "d11":"cd demo11 && webpack-dev-server",
     "d12":"cd demo12 && webpack",
     "d13":"cd demo13 && webpack-dev-server",
-    "d131":"cd demo13 && webpack --config provide.config.js",
-    "d132":"cd demo13 && webpack --config manifest.config.js",
+    "d13_1":"cd demo13_1 && webpack",
     "d14":"cd demo14 && webpack",
-    "d15":"cd demo15 && webpack-dev-server"
+    "d15":"cd demo15 && webpack-dev-server",
+    "d16":"cd demo16 && webpack-dev-server --history-api-fallback"
   },
   "author": "Ruan Yifeng",
   "license": "MIT",

@@ -778,7 +778,7 @@ module.exports = {
 
 ## Demo13_1: manifest ([source](https://github.com/shellphon/webpack-demos/tree/master/demo13_1))
 
-从前面几个demo来看，我们不想把所有js都合并在一起，那就用`CommonsChunkPlugins`分离出公共部分，通常会把库\框架如`jquery`\`react`也抽离出来，但是如果仔细查看会发现，webpack的模块化代码抽离出来了，里面由包含一些时常要更新的内容，很多时候，框架或者库等公共部分，只要一次编译，几乎就没有更新的需求，而且由于其内容比较多，花的编译时间也长，我们可以考虑把其中需要经常更新的部分抽离出来，把框架等无需长期更新的部分独立开来，分割出`manifest`和`vender`,解决此类问题。
+从前面几个demo来看，我们不想把所有js都合并在一起，那就用`CommonsChunkPlugins`分离出公共部分，通常会把库\框架如`jquery` \ `react`也抽离出来，但是如果仔细查看会发现，webpack的模块化代码抽离出来了，里面由包含一些时常要更新的内容，很多时候，框架或者库等公共部分，只要一次编译，几乎就没有更新的需求，而且由于其内容比较多，花的编译时间也长，我们可以考虑把其中需要经常更新的部分抽离出来，把框架等无需长期更新的部分独立开来，分割出`manifest`和`vender`,解决此类问题。
 
 ```bash
 $ npm run d13_1
